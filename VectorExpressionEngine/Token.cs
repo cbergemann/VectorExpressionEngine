@@ -1,0 +1,33 @@
+﻿namespace VectorExpressionEngine
+{
+    public enum Token
+    {
+        EndOfFile,
+        EndOfExpression,
+        Add,
+        Subtract,
+        Multiply,
+        Divide,
+        Exponentiate,
+        OpenParens,
+        CloseParens,
+        Comma,
+        Identifier,
+        Number,
+        String,
+        TernaryIf,
+        TernaryElse,
+        Greater,
+        Lesser,
+        Equal,
+        NotEqual,
+        GreaterOrEqual,
+        LesserOrEqual,
+        LogicalAnd,
+        LogicalOr,
+        LogicalNot,
+        OpenBracket,
+        CloseBracket,
+        Assignment,
+    }
+}

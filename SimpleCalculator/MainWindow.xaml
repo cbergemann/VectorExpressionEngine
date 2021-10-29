@@ -1,0 +1,60 @@
+﻿<Window x:Class="SimpleCalculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleCalculator"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="Simple Calculator" Height="350" Width="350">
+    <Window.DataContext>
+        <local:MainModel/>
+    </Window.DataContext>
+
+    <DockPanel>
+        <TextBox x:Name="ExpressionInputBox" DockPanel.Dock="Bottom" KeyUp="ExpressionInputBox_KeyUp" />
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="resultScrollView">
+            <ItemsControl ItemsSource="{Binding Results}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Background="AliceBlue" Margin="5">
+                            <TextBox Background="Transparent" BorderThickness="0" Text="{Binding Expression, Mode=OneWay}" IsReadOnly="True" TextWrapping="NoWrap" />
+                            <TextBox Name="resultText" Margin="20 0 0 0" Background="Transparent" BorderThickness="0" Text="{Binding Result, Mode=OneWay}" IsReadOnly="True" TextWrapping="NoWrap" HorizontalAlignment="Right" FontWeight="Bold" />
+                            <oxy:PlotView Name="resultPlot" Model="{Binding LineSeries}" Height="200" Width="200" HorizontalAlignment="Right" Visibility="Collapsed" />
+                        </StackPanel>
+
+                        <DataTemplate.Triggers>
+                            
+                            <DataTrigger Binding="{Binding Type}">
+                                <DataTrigger.Value>
+                                    <local:ResultType>LineSeries</local:ResultType>
+                                </DataTrigger.Value>
+
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="resultText"/>
+                                <Setter Property="Visibility" Value="Visible" TargetName="resultPlot"/>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding Type}">
+                                <DataTrigger.Value>
+                                <local:ResultType>Error</local:ResultType>
+                                </DataTrigger.Value>
+
+                                <Setter Property="Foreground" Value="Red" TargetName="resultText"/>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding Type}">
+                                <DataTrigger.Value>
+                                    <local:ResultType>Null</local:ResultType>
+                                </DataTrigger.Value>
+
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="resultText"/>
+                            </DataTrigger>
+                            
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
