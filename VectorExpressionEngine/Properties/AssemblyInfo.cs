@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SimpleExpressionEngine")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("VectorExpressionEngine")]
+[assembly: AssemblyDescription("A library to parse and evaluate mathematical expressions with inbuilt elementwise vector operations")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SimpleExpressionEngine")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCompany("Constantin Bergemann")]
+[assembly: AssemblyProduct("VectorExpressionEngine")]
+[assembly: AssemblyCopyright("Copyright ©  2021 Constantin Bergemann")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
