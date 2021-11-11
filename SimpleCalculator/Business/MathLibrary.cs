@@ -1,12 +1,9 @@
 ﻿using VectorExpressionEngine;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra;
+using SimpleCalculator.Models;
 
-namespace SimpleCalculator
+namespace SimpleCalculator.Business
 {
     public class MathLibrary : ExtendedMath
     {
@@ -173,7 +170,7 @@ namespace SimpleCalculator
 
             var lx = x.Length;
             var n = a.Length;
-            var lrefl = 3 * (n - 1);
+            var lrefl = 3 * n;
 
             if (lx <= lrefl)
             {
