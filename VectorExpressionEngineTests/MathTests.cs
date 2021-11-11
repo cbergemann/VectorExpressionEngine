@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleCalculator;
+using SimpleCalculator.Business;
 using System;
 using System.Linq;
 
@@ -19,8 +20,8 @@ namespace UnitTests
         [TestMethod]
         public void TestFiltFilt()
         {
-            var filterResult = MathLibrary.filtfilt(new [] { 1, 0.1 }, new [] { 1.0, 2, 3, 4 });
-            var filterTarget = new [] { 1.21, 2.42, 3.63, 4.84 };
+            var filterResult = MathLibrary.filtfilt(new [] { 1, 0.1 }, new [] { 1.0, 2, 3, 4, 5, 6, 7 });
+            var filterTarget = new [] { 1.21, 2.42, 3.63, 4.84, 6.05, 7.26, 8.47 };
             Assert.IsTrue(filterResult.Zip(filterTarget, (r, t) => Math.Abs(r - t)).All(a => a < 1e-8));
         }
     }
