@@ -3,10 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VectorExpressionEngine;
 using MSTestExtensions;
 
-namespace UnitTests
+namespace VectorExpressionEngine.Tests
 {
     [TestClass]
     public class UnitTests

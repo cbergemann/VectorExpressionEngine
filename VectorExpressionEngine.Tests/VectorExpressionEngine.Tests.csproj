@@ -7,8 +7,8 @@
     <ProjectGuid>{36CD08B3-457B-47C9-942C-7E515383C270}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnitTests</RootNamespace>
-    <AssemblyName>UnitTests</AssemblyName>
+    <RootNamespace>VectorExpressionEngine.Tests</RootNamespace>
+    <AssemblyName>VectorExpressionEngine.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -70,7 +70,7 @@
       <Name>SimpleCalculator</Name>
     </ProjectReference>
     <ProjectReference Include="..\VectorExpressionEngine\VectorExpressionEngine.csproj">
-      <Project>{e0e8baad-a574-46fb-89b5-618955d1fa1f}</Project>
+      <Project>{36720b6c-7ab5-46bb-9261-d0dd6e169431}</Project>
       <Name>VectorExpressionEngine</Name>
     </ProjectReference>
   </ItemGroup>
