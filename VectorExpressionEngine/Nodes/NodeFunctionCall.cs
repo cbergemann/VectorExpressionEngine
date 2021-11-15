@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Linq;
 
 namespace VectorExpressionEngine
 {
@@ -8,12 +8,12 @@ namespace VectorExpressionEngine
         public NodeFunctionCall(string functionName, IEnumerable<Node> arguments)
         {
             FunctionName = functionName;
-            Arguments = arguments.ToImmutableArray();
+            Arguments = arguments.ToArray();
         }
 
         public string FunctionName { get; }
 
-        public ImmutableArray<Node> Arguments { get; }
+        public Node[] Arguments { get; }
 
         public override object Eval(Context ctx)
         {

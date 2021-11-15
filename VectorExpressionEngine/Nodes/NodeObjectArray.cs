@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace VectorExpressionEngine
@@ -9,10 +8,10 @@ namespace VectorExpressionEngine
     {
         public NodeObjectArray(IEnumerable<Node> elements)
         {
-            Elements = elements.ToImmutableArray();
+            Elements = elements.ToArray();
         }
 
-        public ImmutableArray<Node> Elements { get; }
+        public Node[] Elements { get; }
 
         public override object Eval(Context ctx)
         {

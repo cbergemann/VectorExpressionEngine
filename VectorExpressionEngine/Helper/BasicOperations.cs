@@ -10,24 +10,26 @@ namespace VectorExpressionEngine
 
         public static object ElementAccess(object vector, object no)
         {
+            int idx;
+            Array array;
+
             try
             {
-                // ReSharper disable once RedundantCast - cast is not redundant!
-                var idx = (int)(dynamic)no;
-                var arr = (Array)vector;
-
-                try
-                {
-                    return arr.GetValue(idx);
-                }
-                catch (IndexOutOfRangeException ex)
-                {
-                    throw new SyntaxException($"array index {idx} is out of range 0...{arr.Length}", ex);
-                }
+                idx = Convert.ToInt32(no);
+                array = (Array)vector;
             }
             catch (InvalidCastException ex)
             {
                 throw new SyntaxException($"array element access not defined for types {vector.GetType()}[{no.GetType()}]", ex);
+            }
+
+            try
+            {
+                return array.GetValue(idx);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                throw new SyntaxException($"array index {idx} is out of range 0...{array.Length}", ex);
             }
         }
 
@@ -275,7 +277,7 @@ namespace VectorExpressionEngine
                 }
             }
 
-            throw new SyntaxException($"ternary operation cannot handle types {a.GetType()}, {b.GetType()} and {c.GetType()}");
+            throw new SyntaxException($"ternary operation cannot handle types {a?.GetType().ToString() ?? "null"}, {b?.GetType().ToString() ?? "null"} and {c?.GetType().ToString() ?? "null"}");
         }
 
         public static object BinaryVectorAwareOperation<TIn1,TIn2,TOut>(Func<TIn1, TIn2, TOut> op, object a, object b)
@@ -321,7 +323,7 @@ namespace VectorExpressionEngine
                 }
             }
 
-            throw new SyntaxException($"binary operation cannot handle types {a.GetType()} and {b.GetType()}");
+            throw new SyntaxException($"binary operation cannot handle types {a?.GetType().ToString() ?? "null"} and {b?.GetType().ToString() ?? "null"}");
         }
 
         public static object UnaryVectorAwareOperation<TIn,TOut>(Func<TIn, TOut> op, object a)
@@ -336,7 +338,7 @@ namespace VectorExpressionEngine
                 return vector.Select(op).ToArray();
             }
 
-            throw new SyntaxException($"unary operation cannot handle type {a.GetType()}");
+            throw new SyntaxException($"unary operation cannot handle type {a?.GetType().ToString() ?? "null"}");
         }
     }
 }

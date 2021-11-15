@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -25,7 +24,7 @@ namespace VectorExpressionEngine
 
             Name = attribute.ExpressionName ?? methodInfo.Name;
             IsConstant = attribute.IsConstant;
-            ArgumentTypes = methodInfo.GetParameters().Select(p => p.ParameterType).ToImmutableArray();
+            ArgumentTypes = methodInfo.GetParameters().Select(p => p.ParameterType).ToArray();
             MethodInfo = methodInfo;
         }
 
@@ -33,7 +32,7 @@ namespace VectorExpressionEngine
 
         public bool IsConstant { get; }
 
-        public ImmutableArray<Type> ArgumentTypes { get; }
+        public Type[] ArgumentTypes { get; }
 
         public MethodInfo MethodInfo { get; }
 
