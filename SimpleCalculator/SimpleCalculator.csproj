@@ -34,6 +34,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Filtering.0.7.0\lib\net461\MathNet.Filtering.dll</HintPath>
@@ -124,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VectorExpressionEngine\VectorExpressionEngine.csproj">
-      <Project>{e0e8baad-a574-46fb-89b5-618955d1fa1f}</Project>
+      <Project>{36720b6c-7ab5-46bb-9261-d0dd6e169431}</Project>
       <Name>VectorExpressionEngine</Name>
     </ProjectReference>
   </ItemGroup>
