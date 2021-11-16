@@ -2,15 +2,14 @@
 using System;
 using System.Linq;
 using SimpleCalculator.Models;
+// ReSharper disable UnusedMember.Global
 
 namespace SimpleCalculator.Business
 {
     public class MathLibrary : ExtendedMath
     {
-        public ReflectionContext Context { get; set; }
-
         [Expression("plot")]
-        public static LineSeries plot(double[] x, double[] y)
+        public static LineSeries Plot(double[] x, double[] y)
         {
             if (x.Length != y.Length)
             {
@@ -25,7 +24,7 @@ namespace SimpleCalculator.Business
         }
 
         [Expression("plot")]
-        public static LineSeries plot(double[] x)
+        public static LineSeries Plot(double[] x)
         {
             return new LineSeries
             {
@@ -35,7 +34,7 @@ namespace SimpleCalculator.Business
         }
 
         [Expression("linspace", isConstant: true)]
-        public static double[] linspace(double start, double end, double count)
+        public static double[] Linspace(double start, double end, double count)
         {
             if (count <= 0)
             {
@@ -46,7 +45,7 @@ namespace SimpleCalculator.Business
         }
 
         [Expression("element", isConstant: true)]
-        public double element(double[] vector, double no)
+        public double Element(double[] vector, double no)
         {
             int noInt = (int)Math.Round(no);
 
@@ -58,38 +57,32 @@ namespace SimpleCalculator.Business
             return vector[noInt];
         }
 
-        [Expression("clear")]
-        public void clear()
-        {
-            Context?.Reset();
-        }
-
         [Expression("LowPass", isConstant: true)]
         public static double[] LowPass(double[] signal, double cutoff, double samplingRate)
         {
             var b = LowPassFIRCoefficients(cutoff, samplingRate, Math.Min(signal.Length * 3 - 1, 500));
-            return filtfilt(b, signal);
+            return FiltFilt(b, signal);
         }
 
         [Expression("HighPass", isConstant: true)]
         public static double[] HighPass(double[] signal, double cutoff, double samplingRate)
         {
             var b = HighPassFIRCoefficients(cutoff, samplingRate, Math.Min(signal.Length * 3 - 1, 500));
-            return filtfilt(b, signal);
+            return FiltFilt(b, signal);
         }
 
         [Expression("BandPass", isConstant: true)]
         public static double[] BandPass(double[] signal, double cutoffLow, double cutoffHigh, double samplingRate)
         {
             var b = BandPassFIRCoefficients(cutoffLow, cutoffHigh, samplingRate, Math.Min(signal.Length * 3 - 1, 500));
-            return filtfilt(b, signal);
+            return FiltFilt(b, signal);
         }
 
         [Expression("BandStop", isConstant: true)]
         public static double[] BandStop(double[] signal, double cutoffLow, double cutoffHigh, double samplingRate)
         {
             var b = BandStopFIRCoefficients(cutoffLow, cutoffHigh, samplingRate, Math.Min(signal.Length * 3 - 1, 500));
-            return filtfilt(b, signal);
+            return FiltFilt(b, signal);
         }
 
         [Expression(isConstant: true)]
@@ -123,9 +116,9 @@ namespace SimpleCalculator.Business
         }
 
         [Expression(isConstant: true)]
-        public static double[] filter(double[] b, double[] a, double[] x, double[] zi)
+        public static double[] Filter(double[] b, double[] a, double[] x, double[] zi)
         {
-            normalizeCoefficients(ref b, ref a);
+            NormalizeCoefficients(ref b, ref a);
 
             var filterOrder = b.Length;
             var inputSize = x.Length;
@@ -152,21 +145,21 @@ namespace SimpleCalculator.Business
         }
 
         [Expression(isConstant: true)]
-        public static double[] filter(double[] b, double[] a, double[] x)
+        public static double[] Filter(double[] b, double[] a, double[] x)
         {
-            return filter(b, a, x, new double[] { 0.0 });
+            return Filter(b, a, x, new [] { 0.0 });
         }
 
         [Expression(isConstant: true)]
-        public static double[] filter(double[] b, double[] x)
+        public static double[] Filter(double[] b, double[] x)
         {
-            return filter(b, new double[] { 1.0 }, x, new double[] { 0.0 });
+            return Filter(b, new [] { 1.0 }, x, new [] { 0.0 });
         }
 
         [Expression(isConstant: true)]
-        public static double[] filtfilt(double[] b, double[] a, double[] x)
+        public static double[] FiltFilt(double[] b, double[] a, double[] x)
         {
-            normalizeCoefficients(ref b, ref a);
+            NormalizeCoefficients(ref b, ref a);
 
             var lx = x.Length;
             var n = a.Length;
@@ -195,22 +188,22 @@ namespace SimpleCalculator.Business
             var v = v1.Concat(v2).Concat(v3).ToArray();
 
             // forward filter
-            var vo1 = filter(b, a, v, si.Select(si1 => si1 * v.First()).ToArray());
+            var vo1 = Filter(b, a, v, si.Select(si1 => si1 * v.First()).ToArray());
 
             // reverse filter
-            var vo2 = filter(b, a, vo1.Reverse().ToArray(), si.Select(si1 => si1 * vo1.Last()).ToArray()).Reverse();
+            var vo2 = Filter(b, a, vo1.Reverse().ToArray(), si.Select(si1 => si1 * vo1.Last()).ToArray()).Reverse();
 
             var y = vo2.Skip(lrefl).Take(lx).ToArray();
             return y;
         }
 
         [Expression(isConstant: true)]
-        public static double[] filtfilt(double[] b, double[] x)
+        public static double[] FiltFilt(double[] b, double[] x)
         {
-            return filtfilt(b, new double[] { 1.0 }, x);
+            return FiltFilt(b, new [] { 1.0 }, x);
         }
 
-        private static void normalizeCoefficients(ref double[] b, ref double[] a)
+        private static void NormalizeCoefficients(ref double[] b, ref double[] a)
         {
             if (!a.Any())
             {

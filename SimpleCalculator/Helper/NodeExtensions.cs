@@ -5,7 +5,7 @@ namespace SimpleCalculator.Helper
 {
     public static class NodeExtensions
     {
-        public static void PrintNodes(this Node[] nodes)
+        public static void PrintNodes(this INode[] nodes)
         {
             foreach (var node in nodes)
             {
@@ -13,7 +13,7 @@ namespace SimpleCalculator.Helper
             }
         }
 
-        public static void PrintNode(this Node node, int indent = 0)
+        public static void PrintNode(this INode node, int indent = 0)
         {
             var ind = new string(' ', indent);
 
@@ -49,7 +49,7 @@ namespace SimpleCalculator.Helper
             else if (node is NodeUnaryOperation nodeUnaryOperation)
             {
                 Console.WriteLine($"{ind}NodeUnaryOperation: {nodeUnaryOperation.Operation}");
-                foreach (var arg in new Node[] { nodeUnaryOperation.Parameter1 })
+                foreach (var arg in new INode[] { nodeUnaryOperation.Parameter1 })
                 {
                     arg.PrintNode(indent + 2);
                 }
@@ -57,7 +57,7 @@ namespace SimpleCalculator.Helper
             else if (node is NodeBinaryOperation nodeBinaryOperation)
             {
                 Console.WriteLine($"{ind}NodeBinaryOperation: {nodeBinaryOperation.Operation}");
-                foreach (var arg in new Node[] { nodeBinaryOperation.Parameter1, nodeBinaryOperation.Parameter2 })
+                foreach (var arg in new INode[] { nodeBinaryOperation.Parameter1, nodeBinaryOperation.Parameter2 })
                 {
                     arg.PrintNode(indent + 2);
                 }
@@ -65,7 +65,7 @@ namespace SimpleCalculator.Helper
             else if (node is NodeTernaryOperation nodeTernaryOperation)
             {
                 Console.WriteLine($"{ind}NodeTernaryOperation: {nodeTernaryOperation.Operation}");
-                foreach (var arg in new Node[] { nodeTernaryOperation.Parameter1, nodeTernaryOperation.Parameter2, nodeTernaryOperation.Parameter3 })
+                foreach (var arg in new INode[] { nodeTernaryOperation.Parameter1, nodeTernaryOperation.Parameter2, nodeTernaryOperation.Parameter3 })
                 {
                     arg.PrintNode(indent + 2);
                 }
@@ -76,7 +76,7 @@ namespace SimpleCalculator.Helper
             }
             else
             {
-                Console.WriteLine($"{ind}Node: {typeof(Node).Name}");
+                Console.WriteLine($"{ind}Node: {typeof(INode).Name}");
             }
         }
     }

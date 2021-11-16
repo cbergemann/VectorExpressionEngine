@@ -1,4 +1,5 @@
-﻿using OxyPlot;
+﻿using System.Globalization;
+using OxyPlot;
 using OxyPlot.Wpf;
 using SimpleCalculator.Helper;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace SimpleCalculator.Models
 
     public class ResultModel
     {
-        public static ResultModel FromExpression(Context ctx, string expression)
+        public static ResultModel FromExpression(IContext ctx, string expression)
         {
             var resultEntry = new ResultModel
             {
@@ -34,74 +35,55 @@ namespace SimpleCalculator.Models
                 return resultEntry;
             }
 
-            if (result is double doubleResult)
+            switch (result)
             {
-                resultEntry.Result = doubleResult.ToString();
-                resultEntry.Type = ResultType.Value;
+                case double doubleResult:
+                    resultEntry.Result = doubleResult.ToString(CultureInfo.CurrentUICulture);
+                    resultEntry.Type = ResultType.Value;
+                    return resultEntry;
 
-                return resultEntry;
+                case string stringResult:
+                    resultEntry.Result = "'" + stringResult + "'";
+                    resultEntry.Type = ResultType.Value;
+                    return resultEntry;
+
+                case bool boolResult:
+                    resultEntry.Result = boolResult ? "true" : "false";
+                    resultEntry.Type = ResultType.Value;
+                    return resultEntry;
+
+                case double[] doubleArrayResult:
+                    resultEntry.Result = "[" + string.Join(", ", doubleArrayResult.Select(r => r.ToString("G5"))) + "]";
+                    resultEntry.Type = ResultType.Value;
+                    return resultEntry;
+
+                case string[] stringArrayResult:
+                    resultEntry.Result = "['" + string.Join("', '", stringArrayResult.Select(r => r.ToString())) + "']";
+                    resultEntry.Type = ResultType.Value;
+                    return resultEntry;
+
+                case bool[] boolArrayResult:
+                    resultEntry.Result = "[" + string.Join(", ", boolArrayResult.Select(r => r ? "true" : "false")) + "]";
+                    resultEntry.Type = ResultType.Value;
+                    return resultEntry;
+
+                case LineSeries lineSeriesResult:
+                    resultEntry.Type = ResultType.LineSeries;
+                    var series = new OxyPlot.Series.LineSeries();
+                    series.Points.AddRange(lineSeriesResult.X.Zip(lineSeriesResult.Y, (x, y) => new DataPoint(x, y)));
+                    resultEntry.LineSeries = new PlotModel();
+                    resultEntry.LineSeries.Series.Add(series);
+                    return resultEntry;
+
+                case null:
+                    resultEntry.Type = ResultType.Null;
+                    return resultEntry;
+
+                default:
+                    resultEntry.Result = "Unknown Result!!!";
+                    resultEntry.Type = ResultType.Error;
+                    return resultEntry;
             }
-            
-            if (result is string stringResult)
-            {
-                resultEntry.Result = "'" + stringResult + "'";
-                resultEntry.Type = ResultType.Value;
-
-                return resultEntry;
-            }
-
-            if (result is bool boolResult)
-            {
-                resultEntry.Result = boolResult ? "true" : "false";
-                resultEntry.Type = ResultType.Value;
-
-                return resultEntry;
-            }
-            
-            if (result is double[] doubleArrayResult)
-            {
-                resultEntry.Result = "[" + string.Join(", ", doubleArrayResult.Select(r => r.ToString("G5"))) + "]";
-                resultEntry.Type = ResultType.Value;
-
-                return resultEntry;
-            }
-
-            if (result is string[] stringArrayResult)
-            {
-                resultEntry.Result = "['" + string.Join("', '", stringArrayResult.Select(r => r.ToString())) + "']";
-                resultEntry.Type = ResultType.Value;
-
-                return resultEntry;
-            }
-
-            if (result is bool[] boolArrayResult)
-            {
-                resultEntry.Result = "[" + string.Join(", ", boolArrayResult.Select(r => r ? "true" : "false")) + "]";
-                resultEntry.Type = ResultType.Value;
-
-                return resultEntry;
-            }
-            
-            if (result is LineSeries lineSeriesResult)
-            {
-                resultEntry.Type = ResultType.LineSeries;
-                var serie = new OxyPlot.Series.LineSeries();
-                serie.Points.AddRange(lineSeriesResult.X.Zip(lineSeriesResult.Y, (x, y) => new DataPoint(x, y)));
-                resultEntry.LineSeries = new PlotModel();
-                resultEntry.LineSeries.Series.Add(serie);
-
-                return resultEntry;
-            }
-            
-            if (result == null)
-            {
-                resultEntry.Type = ResultType.Null;
-                return resultEntry;
-            }
-
-            resultEntry.Result = "Unknown Result!!!";
-            resultEntry.Type = ResultType.Error;
-            return resultEntry;
         }
 
         public ResultModel()
@@ -131,6 +113,7 @@ namespace SimpleCalculator.Models
                     Clipboard.SetImage(bitmap);
                     return;
 
+                case ResultType.Null:
                 default:
                     return;
             }

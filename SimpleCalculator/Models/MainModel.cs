@@ -10,21 +10,21 @@ namespace SimpleCalculator.Models
 {
     public class MainModel : INotifyPropertyChanged
     {
-        public event EventHandler ResultAdded;
+        public event EventHandler<ResultModel> ResultAdded;
 
-        public event EventHandler HistoryRecalled;
+        public event EventHandler<ResultModel> HistoryRecalled;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private int _historyCounter = 0;
+        private int _historyCounter;
 
-        private Context _ctx;
+        private readonly IContext _ctx;
 
         public MainModel()
         {
             var lib = new MathLibrary();
-            lib.Context = new ReflectionContext(lib);
-            _ctx = lib.Context;
+            var baseContext = new ReflectionContext(lib);
+            _ctx = new ScopedContext(baseContext);
 
             GoUpInHistory = new RelayCommand(GoUpInHistory_Executed);
             GoDownInHistory = new RelayCommand(GoDownInHistory_Executed);
@@ -44,7 +44,7 @@ namespace SimpleCalculator.Models
             _historyCounter++;
 
             ExpressionText = result.Expression;
-            HistoryRecalled?.Invoke(this, default);
+            HistoryRecalled?.Invoke(this, result);
         }
 
         public ICommand GoDownInHistory { get; }
@@ -62,7 +62,7 @@ namespace SimpleCalculator.Models
             _historyCounter--;
 
             ExpressionText = result.Expression;
-            HistoryRecalled?.Invoke(this, default);
+            HistoryRecalled?.Invoke(this, result);
         }
 
         public ICommand Evaluate { get; }
@@ -81,7 +81,7 @@ namespace SimpleCalculator.Models
             var resultEntry = ResultModel.FromExpression(_ctx, exp);
 
             Results.Add(resultEntry);
-            ResultAdded?.Invoke(this, default);
+            ResultAdded?.Invoke(this, resultEntry);
         }
 
         public ObservableCollection<ResultModel> Results { get; } = new ObservableCollection<ResultModel>();
