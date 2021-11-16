@@ -12,7 +12,7 @@ namespace UnitTests
         [TestMethod]
         public void TestFilter()
         {
-            var filterResult = MathLibrary.filter(new [] { 1, 0.1 }, new [] { 1.0, 2, 3, 4 });
+            var filterResult = MathLibrary.Filter(new [] { 1, 0.1 }, new [] { 1.0, 2, 3, 4 });
             var filterTarget = new [] { 1, 2.1, 3.2, 4.3 };
             Assert.IsTrue(filterResult.SequenceEqual(filterTarget));
         }
@@ -20,7 +20,7 @@ namespace UnitTests
         [TestMethod]
         public void TestFiltFilt()
         {
-            var filterResult = MathLibrary.filtfilt(new [] { 1, 0.1 }, new [] { 1.0, 2, 3, 4, 5, 6, 7 });
+            var filterResult = MathLibrary.FiltFilt(new [] { 1, 0.1 }, new [] { 1.0, 2, 3, 4, 5, 6, 7 });
             var filterTarget = new [] { 1.21, 2.42, 3.63, 4.84, 6.05, 7.26, 8.47 };
             Assert.IsTrue(filterResult.Zip(filterTarget, (r, t) => Math.Abs(r - t)).All(a => a < 1e-8));
         }

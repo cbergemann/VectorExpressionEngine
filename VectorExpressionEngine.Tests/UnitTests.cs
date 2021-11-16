@@ -317,7 +317,7 @@ namespace VectorExpressionEngine.Tests
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("1 ? 2 + 1").Eval(null), "missing ternary else operator");
         }
 
-        private class MyContext : Context
+        private class MyContext : IContext
         {
             public MyContext(double r)
             {
@@ -326,7 +326,7 @@ namespace VectorExpressionEngine.Tests
 
             private readonly double _r;
 
-            public override object ResolveVariable(string name)
+            public object ResolveVariable(string name)
             {
                 switch (name)
                 {
@@ -337,15 +337,19 @@ namespace VectorExpressionEngine.Tests
                 throw new SyntaxException($"Unknown variable: '{name}'");
             }
 
-            public override object CallFunction(string name, object[] arguments)
+            public object CallFunction(string name, object[] arguments)
             {
                 throw new InvalidOperationException();
             }
 
-            public override void AssignVariable(string name, object value)
+            public void AssignVariable(string name, object value)
             {
                 throw new InvalidOperationException();
             }
+
+            public bool IsConstantExpressionVariable(string name) => false;
+
+            public bool IsConstantExpressionCall(string name, Type[] arguments) => false;
         }
 
         [TestMethod]
@@ -356,14 +360,14 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(Parser.ParseSingle("2 * pi * r").Eval(ctx), 2 * Math.PI * 10);
         }
 
-        private class MyFunctionContext : Context
+        private class MyFunctionContext : IContext
         {
-            public override object ResolveVariable(string name)
+            public object ResolveVariable(string name)
             {
                 throw new InvalidDataException($"Unknown variable: '{name}'");
             }
 
-            public override object CallFunction(string name, object[] arguments)
+            public object CallFunction(string name, object[] arguments)
             {
                 if (name == "rectArea")
                 {
@@ -378,10 +382,14 @@ namespace VectorExpressionEngine.Tests
                 throw new InvalidDataException($"Unknown function: '{name}'");
             }
 
-            public override void AssignVariable(string name, object value)
+            public void AssignVariable(string name, object value)
             {
                 throw new InvalidOperationException();
             }
+
+            public bool IsConstantExpressionVariable(string name) => false;
+
+            public bool IsConstantExpressionCall(string name, Type[] arguments) => false;
         }
 
         [TestMethod]
@@ -418,12 +426,6 @@ namespace VectorExpressionEngine.Tests
             {
                 return (width + height) * 2;
             }
-
-            [Expression("clear")]
-            public void Clear()
-            {
-                Context?.Reset();
-            }
         }
 
         [TestMethod]
@@ -441,12 +443,6 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(Parser.ParseSingle("rectPerimeter(10,20)").Eval(ctx), 60.0);
             Assert.AreEqual(Parser.ParseSingle("2 * pi * r").Eval(ctx), 2 * Math.PI * 10);
             Assert.AreEqual(Parser.ParseSingle("rectArea(10,'test')").Eval(ctx), "makes no sense");
-            Assert.IsNull(Parser.ParseSingle("clear()").Eval(ctx));
-            Assert.IsNull(Parser.ParseSingle("clear").Eval(ctx));
-            Assert.AreEqual(Parser.ParseSingle("clear = 1").Eval(ctx), 1.0);
-            Assert.AreEqual(Parser.ParseSingle("clear").Eval(ctx), 1.0);
-            Assert.IsNull(Parser.ParseSingle("clear()").Eval(ctx));
-            Assert.IsNull(Parser.ParseSingle("clear").Eval(ctx));
 
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("unknown").Eval(ctx), "Unknown variable or function: 'unknown'");
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("unknown('x')").Eval(ctx), "No function 'unknown' found for arguments of type 'String'");

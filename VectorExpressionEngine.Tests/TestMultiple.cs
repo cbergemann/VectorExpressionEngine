@@ -11,7 +11,7 @@ namespace UnitTests
         public void TestMultipleExpressions()
         {
             var basicMath = new BasicOperations();
-            var ctx = new ReflectionContext(basicMath);
+            var ctx = new ScopedContext(new ReflectionContext(basicMath));
 
             var nodes = Parser.Parse("a=1;b=2;c=a+b");
             Assert.AreEqual(3, nodes.Length);

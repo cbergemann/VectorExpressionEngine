@@ -13,7 +13,7 @@ namespace UnitTests
         public void TestSimpleAssignment()
         {
             var scope = new EmptyScope();
-            var context = new ReflectionContext(scope);
+            var context = new ScopedContext(new ReflectionContext(scope));
 
             var tree = Parser.ParseSingle("a = 1");
             Assert.IsTrue(tree is NodeAssignment);
