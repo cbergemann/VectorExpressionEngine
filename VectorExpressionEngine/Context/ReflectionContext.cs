@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace VectorExpressionEngine
 {
-    public class ReflectionContext : Context
+    public class ReflectionContext : IContext
     {
         public ReflectionContext(object targetObject)
         {
@@ -20,24 +20,12 @@ namespace VectorExpressionEngine
 
         private readonly object _targetObject;
 
-        private readonly Dictionary<string, object> _variables = new Dictionary<string, object>();
-
         private readonly List<CachedProperty> _reflectedProperties;
 
         private readonly List<CachedMethod> _reflectedMethods;
 
-        public void Reset()
+        public object ResolveVariable(string name)
         {
-            _variables.Clear();
-        }
-
-        public override object ResolveVariable(string name)
-        {
-            if (_variables.TryGetValue(name, out var variable))
-            {
-                return variable;
-            }
-
             var cachedProperty = _reflectedProperties.FirstOrDefault(p => p.Name == name);
             if (cachedProperty != null)
             {
@@ -60,7 +48,7 @@ namespace VectorExpressionEngine
             throw new SyntaxException($"Unknown variable or function: '{name}'");
         }
 
-        public override object CallFunction(string name, object[] arguments)
+        public object CallFunction(string name, object[] arguments)
         {
             var argumentTypes = arguments.Select(a => a.GetType()).ToArray();
 
@@ -80,23 +68,18 @@ namespace VectorExpressionEngine
             }
         }
 
-        public override bool IsConstantExpressionVariable(string name)
+        public bool IsConstantExpressionVariable(string name)
         {
-            if (_variables.ContainsKey(name))
-            {
-                return true;
-            }
-
             var cachedProperty = _reflectedProperties.FirstOrDefault(p => p.Name == name);
-            if (cachedProperty != null)
+            if (cachedProperty == null)
             {
-                return cachedProperty.IsConstant;
+                throw new SyntaxException($"Unknown variable: '{name}'");
             }
 
-            throw new SyntaxException($"Unknown variable: '{name}'");
+            return cachedProperty.IsConstant;
         }
 
-        public override bool IsConstantExpressionCall(string name, Type[] argumentTypes)
+        public bool IsConstantExpressionCall(string name, Type[] argumentTypes)
         {
             var cachedMethod = _reflectedMethods.FirstOrDefault(m => m.IsMatch(name, argumentTypes));
             if (cachedMethod == null)
@@ -107,9 +90,9 @@ namespace VectorExpressionEngine
             return cachedMethod.IsConstant;
         }
 
-        public override void AssignVariable(string name, object value)
+        public void AssignVariable(string name, object value)
         {
-            _variables[name] = value;
+            throw new SyntaxException($"cannot assign variable - context is read-only");
         }
     }
 }

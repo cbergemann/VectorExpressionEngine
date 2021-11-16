@@ -1,8 +1,8 @@
 ﻿namespace VectorExpressionEngine
 {
-    public class NodeAssignment : Node
+    public class NodeAssignment : INode
     {
-        public NodeAssignment(string variableName, Node assignment)
+        public NodeAssignment(string variableName, INode assignment)
         {
             VariableName = variableName;
             Assignment = assignment;
@@ -10,9 +10,9 @@
 
         public string VariableName { get; }
 
-        public Node Assignment { get; }
+        public INode Assignment { get; }
 
-        public override object Eval(Context ctx)
+        public object Eval(IContext ctx)
         {
             var value = Assignment.Eval(ctx);
             ctx.AssignVariable(VariableName, value);

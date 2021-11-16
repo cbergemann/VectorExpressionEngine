@@ -1,6 +1,6 @@
 ﻿namespace VectorExpressionEngine
 {
-    public class NodeObject : Node
+    public class NodeObject : INode
     {
         public NodeObject(object value)
         {
@@ -9,7 +9,7 @@
 
         public object Value { get; }
 
-        public override object Eval(Context ctx)
+        public object Eval(IContext ctx)
         {
             return Value;
         }

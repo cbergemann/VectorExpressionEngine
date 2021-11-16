@@ -14,9 +14,9 @@ namespace VectorExpressionEngine
 
         private readonly Tokenizer _tokenizer;
 
-        public Node[] ParseExpression()
+        public INode[] ParseExpression()
         {
-            var expressions = new List<Node>();
+            var expressions = new List<INode>();
 
             while (true)
             {
@@ -51,7 +51,7 @@ namespace VectorExpressionEngine
             return expressions.Where(n => !(n is NodeEmpty && expressions.Last() != n)).ToArray();
         }
 
-        private Node ParseAssignment()
+        private INode ParseAssignment()
         {
             var lhs = ParseTernary();
 
@@ -74,7 +74,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseTernary()
+        private INode ParseTernary()
         {
             var lhs = ParseLogicalOr();
 
@@ -110,7 +110,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseLogicalOr()
+        private INode ParseLogicalOr()
         {
             var lhs = ParseLogicalAnd();
 
@@ -137,7 +137,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseLogicalAnd()
+        private INode ParseLogicalAnd()
         {
             var lhs = ParseLogical();
 
@@ -164,7 +164,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseLogical()
+        private INode ParseLogical()
         {
             var lhs = ParseEqualAndNonEqual();
 
@@ -200,7 +200,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseEqualAndNonEqual()
+        private INode ParseEqualAndNonEqual()
         {
             var lhs = ParseAddSubtract();
 
@@ -230,7 +230,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseAddSubtract()
+        private INode ParseAddSubtract()
         {
             var lhs = ParseMultiplyDivide();
 
@@ -260,7 +260,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseMultiplyDivide()
+        private INode ParseMultiplyDivide()
         {
             var lhs = ParseUnary();
 
@@ -290,7 +290,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseUnary()
+        private INode ParseUnary()
         {
             while (true)
             {
@@ -322,7 +322,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseExponentiate()
+        private INode ParseExponentiate()
         {
             var lhs = ParseLeaf();
 
@@ -359,7 +359,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        private Node ParseLeaf()
+        private INode ParseLeaf()
         {
             if (_tokenizer.Token == Token.Number)
             {
@@ -404,7 +404,7 @@ namespace VectorExpressionEngine
             throw new SyntaxException($"Unexpected token: {_tokenizer.Token}");
         }
 
-        private bool TryParseArray(out Node node)
+        private bool TryParseArray(out INode node)
         {
             if (_tokenizer.Token != Token.OpenBracket)
             {
@@ -414,12 +414,12 @@ namespace VectorExpressionEngine
 
             _tokenizer.NextToken();
 
-            var elements = new List<Node>();
+            var elements = new List<INode>();
 
             if (_tokenizer.Token == Token.CloseBracket)
             {
                 _tokenizer.NextToken();
-                node = new NodeObjectArray(Array.Empty<Node>());
+                node = new NodeObjectArray(Array.Empty<INode>());
                 return true;
             }
 
@@ -447,7 +447,7 @@ namespace VectorExpressionEngine
             return true;
         }
 
-        private bool TryParseVariable(out Node node)
+        private bool TryParseVariable(out INode node)
         {
             if (_tokenizer.Token != Token.Identifier)
             {
@@ -462,7 +462,7 @@ namespace VectorExpressionEngine
             {
                 _tokenizer.NextToken();
 
-                var arguments = new List<Node>();
+                var arguments = new List<INode>();
                 while (true)
                 {
                     if (_tokenizer.Token == Token.CloseParens)
@@ -530,12 +530,12 @@ namespace VectorExpressionEngine
 
         #region Convenience Helpers
         
-        public static Node ParseSingle(string str)
+        public static INode ParseSingle(string str)
         {
             return Parse(str).Single();
         }
 
-        public static Node[] Parse(string str)
+        public static INode[] Parse(string str)
         {
             using (var reader = new StringReader(str))
             {
@@ -543,7 +543,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        public static Node[] Parse(Tokenizer tokenizer)
+        public static INode[] Parse(Tokenizer tokenizer)
         {
             var parser = new Parser(tokenizer);
             return parser.ParseExpression();

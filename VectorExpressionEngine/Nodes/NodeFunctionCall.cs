@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace VectorExpressionEngine
 {
-    public class NodeFunctionCall : Node
+    public class NodeFunctionCall : INode
     {
-        public NodeFunctionCall(string functionName, IEnumerable<Node> arguments)
+        public NodeFunctionCall(string functionName, IEnumerable<INode> arguments)
         {
             FunctionName = functionName;
             Arguments = arguments.ToArray();
@@ -13,9 +13,9 @@ namespace VectorExpressionEngine
 
         public string FunctionName { get; }
 
-        public Node[] Arguments { get; }
+        public INode[] Arguments { get; }
 
-        public override object Eval(Context ctx)
+        public object Eval(IContext ctx)
         {
             var argumentValues = new object[Arguments.Length];
             for (int i=0; i< Arguments.Length; i++)

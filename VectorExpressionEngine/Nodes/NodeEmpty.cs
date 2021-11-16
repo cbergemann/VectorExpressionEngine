@@ -1,8 +1,8 @@
 ﻿namespace VectorExpressionEngine
 {
-    public class NodeEmpty : Node
+    public class NodeEmpty : INode
     {
-        public override object Eval(Context ctx)
+        public object Eval(IContext ctx)
         {
             return null;
         }

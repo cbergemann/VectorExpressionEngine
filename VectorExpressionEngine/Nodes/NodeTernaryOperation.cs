@@ -2,9 +2,9 @@
 
 namespace VectorExpressionEngine
 {
-    public class NodeTernaryOperation : Node
+    public class NodeTernaryOperation : INode
     {
-        public NodeTernaryOperation(Func<object, object, object, object> op, Node p1, Node p2, Node p3)
+        public NodeTernaryOperation(Func<object, object, object, object> op, INode p1, INode p2, INode p3)
         {
             Operation = op;
             Parameter1 = p1;
@@ -14,13 +14,13 @@ namespace VectorExpressionEngine
 
         public Func<object, object, object, object> Operation { get; }
 
-        public Node Parameter1 { get; }
+        public INode Parameter1 { get; }
 
-        public Node Parameter2 { get; }
+        public INode Parameter2 { get; }
 
-        public Node Parameter3 { get; }
+        public INode Parameter3 { get; }
 
-        public override object Eval(Context ctx)
+        public object Eval(IContext ctx)
         {
             var p1 = Parameter1.Eval(ctx);
             var p2 = Parameter2.Eval(ctx);

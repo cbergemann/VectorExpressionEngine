@@ -2,9 +2,9 @@
 
 namespace VectorExpressionEngine
 {
-    public class NodeUnaryOperation : Node
+    public class NodeUnaryOperation : INode
     {
-        public NodeUnaryOperation(Func<object, object> op, Node p1)
+        public NodeUnaryOperation(Func<object, object> op, INode p1)
         {
             Operation = op;
             Parameter1 = p1;
@@ -12,9 +12,9 @@ namespace VectorExpressionEngine
 
         public Func<object, object> Operation { get; }
 
-        public Node Parameter1 { get; }
+        public INode Parameter1 { get; }
 
-        public override object Eval(Context ctx)
+        public object Eval(IContext ctx)
         {
             var p1 = Parameter1.Eval(ctx);
             return Operation(p1);

@@ -10,12 +10,12 @@ namespace VectorExpressionEngine
 
         public static object ElementAccess(object vector, object no)
         {
-            int idx;
+            long idx;
             Array array;
 
             try
             {
-                idx = Convert.ToInt32(no);
+                idx = Convert.ToInt64(no);
                 array = (Array)vector;
             }
             catch (InvalidCastException ex)

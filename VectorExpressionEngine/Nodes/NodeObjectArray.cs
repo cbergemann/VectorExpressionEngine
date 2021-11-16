@@ -4,16 +4,16 @@ using System.Linq;
 
 namespace VectorExpressionEngine
 {
-    public class NodeObjectArray : Node
+    public class NodeObjectArray : INode
     {
-        public NodeObjectArray(IEnumerable<Node> elements)
+        public NodeObjectArray(IEnumerable<INode> elements)
         {
             Elements = elements.ToArray();
         }
 
-        public Node[] Elements { get; }
+        public INode[] Elements { get; }
 
-        public override object Eval(Context ctx)
+        public object Eval(IContext ctx)
         {
             if (Elements.Length == 0)
             {

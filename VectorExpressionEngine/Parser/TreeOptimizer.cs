@@ -4,7 +4,7 @@ namespace VectorExpressionEngine
 {
     public static class TreeOptimizer
     {
-        public static void Optimize(Node[] nodes, Context ctx = null)
+        public static void Optimize(INode[] nodes, IContext ctx = null)
         {
             var doneSomething = true;
             while (doneSomething)
@@ -20,7 +20,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        public static Node Optimize(Node node, Context ctx = null)
+        public static INode Optimize(INode node, IContext ctx = null)
         {
             var doneSomething = true;
             while (doneSomething)
@@ -30,7 +30,7 @@ namespace VectorExpressionEngine
             return node;
         }
 
-        private static Node OptimizeNode(Node node, Context ctx, out bool doneSomething)
+        private static INode OptimizeNode(INode node, IContext ctx, out bool doneSomething)
         {
             doneSomething = false;
 
@@ -100,12 +100,12 @@ namespace VectorExpressionEngine
             return node;
         }
 
-        private static Node OptimizeFunctionCall(NodeFunctionCall nodeFc, Context ctx, out bool doneSomething)
+        private static INode OptimizeFunctionCall(NodeFunctionCall nodeFc, IContext ctx, out bool doneSomething)
         {
             doneSomething = false;
             var isObjectOnly = true;
 
-            var arguments = new Node[nodeFc.Arguments.Length];
+            var arguments = new INode[nodeFc.Arguments.Length];
             for (int it = 0; it < nodeFc.Arguments.Length; it++)
             {
                 arguments[it] = OptimizeNode(nodeFc.Arguments[it], ctx, out bool doneSomethingArg);
@@ -138,7 +138,7 @@ namespace VectorExpressionEngine
             return nodeFc;
         }
 
-        private static Node OptimizeUnaryOperation(NodeUnaryOperation nodeOp, Context ctx, out bool doneSomething)
+        private static INode OptimizeUnaryOperation(NodeUnaryOperation nodeOp, IContext ctx, out bool doneSomething)
         {
             doneSomething = false;
 
@@ -162,7 +162,7 @@ namespace VectorExpressionEngine
             return nodeOp;
         }
 
-        private static Node OptimizeBinaryOperation(NodeBinaryOperation nodeOp, Context ctx, out bool doneSomething)
+        private static INode OptimizeBinaryOperation(NodeBinaryOperation nodeOp, IContext ctx, out bool doneSomething)
         {
             doneSomething = false;
 
@@ -192,7 +192,7 @@ namespace VectorExpressionEngine
             return nodeOp;
         }
 
-        private static Node OptimizeTernaryOperation(NodeTernaryOperation nodeOp, Context ctx, out bool doneSomething)
+        private static INode OptimizeTernaryOperation(NodeTernaryOperation nodeOp, IContext ctx, out bool doneSomething)
         {
             doneSomething = false;
 
@@ -228,12 +228,12 @@ namespace VectorExpressionEngine
             return nodeOp;
         }
 
-        private static Node OptimizeObjectArray(NodeObjectArray nodeArr, Context ctx, out bool doneSomething)
+        private static INode OptimizeObjectArray(NodeObjectArray nodeArr, IContext ctx, out bool doneSomething)
         {
             doneSomething = false;
             var isObjectOnly = true;
 
-            var elements = new Node[nodeArr.Elements.Length];
+            var elements = new INode[nodeArr.Elements.Length];
             for (int it = 0; it < nodeArr.Elements.Length; it++)
             {
                 elements[it] = OptimizeNode(nodeArr.Elements[it], ctx, out bool doneSomethingPar);
@@ -262,7 +262,7 @@ namespace VectorExpressionEngine
             return nodeArr;
         }
 
-        private static Node OptimizeVariable(NodeVariable nodeVar, Context ctx, out bool doneSomething)
+        private static INode OptimizeVariable(NodeVariable nodeVar, IContext ctx, out bool doneSomething)
         {
             doneSomething = false;
 
@@ -275,7 +275,7 @@ namespace VectorExpressionEngine
             return nodeVar;
         }
 
-        private static Node OptimizeAssignment(NodeAssignment nodeAssignment, Context ctx, out bool doneSomething)
+        private static INode OptimizeAssignment(NodeAssignment nodeAssignment, IContext ctx, out bool doneSomething)
         {
             doneSomething = false;
 

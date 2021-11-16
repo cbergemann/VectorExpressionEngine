@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace VectorExpressionEngine
 {
-    public class ScopedContext : Context
+    public class ScopedContext : IContext
     {
-        public ScopedContext(Context parentContext)
+        public ScopedContext(IContext parentContext)
         {
             Parent = parentContext;
         }
 
-        public Context Parent { get; }
+        public IContext Parent { get; }
 
         private readonly Dictionary<string, object> _variables = new Dictionary<string, object>();
 
-        public override object ResolveVariable(string name)
+        public object ResolveVariable(string name)
         {
             if (_variables.TryGetValue(name, out var value))
             {
@@ -27,17 +27,17 @@ namespace VectorExpressionEngine
             return Parent.ResolveVariable(name);
         }
 
-        public override void AssignVariable(string name, object value)
+        public void AssignVariable(string name, object value)
         {
             _variables[name] = value;
         }
 
-        public override object CallFunction(string name, object[] arguments)
+        public object CallFunction(string name, object[] arguments)
         {
             return Parent.CallFunction(name, arguments);
         }
 
-        public override bool IsConstantExpressionVariable(string name)
+        public bool IsConstantExpressionVariable(string name)
         {
             if (_variables.ContainsKey(name))
             {
@@ -47,7 +47,7 @@ namespace VectorExpressionEngine
             return Parent.IsConstantExpressionVariable(name);
         }
 
-        public override bool IsConstantExpressionCall(string name, Type[] arguments)
+        public bool IsConstantExpressionCall(string name, Type[] arguments)
         {
             return Parent.IsConstantExpressionCall(name, arguments);
         }
