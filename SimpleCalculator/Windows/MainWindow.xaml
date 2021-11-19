@@ -33,7 +33,13 @@
                             
                             <TextBox Background="Transparent" BorderThickness="0" Text="{Binding Expression, Mode=OneWay}" IsReadOnly="True" TextWrapping="NoWrap" />
                             <TextBox Name="resultText" Margin="20 0 0 0" Background="Transparent" BorderThickness="0" Text="{Binding Result, Mode=OneWay}" IsReadOnly="True" TextWrapping="NoWrap" HorizontalAlignment="Right" FontWeight="Bold" />
-                            <oxy:PlotView Name="resultPlot" Model="{Binding LineSeries}" Height="200" Width="200" HorizontalAlignment="Right" Visibility="Collapsed" />
+                            <oxy:PlotView Name="resultPlot" Model="{Binding LineSeries}" Height="200" Width="200" HorizontalAlignment="Right" Visibility="Collapsed" Background="AliceBlue">
+                                <oxy:PlotView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Copy result to Clipboard" Command="{Binding CopyResultToClipboard}" />
+                                    </ContextMenu>
+                                </oxy:PlotView.ContextMenu>
+                            </oxy:PlotView>
                         </StackPanel>
 
                         <DataTemplate.Triggers>
