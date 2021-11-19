@@ -11,6 +11,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>array expressionengine matlab</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
