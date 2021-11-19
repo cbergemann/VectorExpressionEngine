@@ -38,7 +38,7 @@ namespace SimpleCalculator.Models
             switch (result)
             {
                 case double doubleResult:
-                    resultEntry.Result = doubleResult.ToString(CultureInfo.CurrentUICulture);
+                    resultEntry.Result = doubleResult.ToString("G5", CultureInfo.CurrentUICulture);
                     resultEntry.Type = ResultType.Value;
                     return resultEntry;
 
@@ -53,7 +53,7 @@ namespace SimpleCalculator.Models
                     return resultEntry;
 
                 case double[] doubleArrayResult:
-                    resultEntry.Result = "[" + string.Join(", ", doubleArrayResult.Select(r => r.ToString("G5"))) + "]";
+                    resultEntry.Result = "[" + string.Join(", ", doubleArrayResult.Select(r => r.ToString("G5", CultureInfo.CurrentUICulture))) + "]";
                     resultEntry.Type = ResultType.Value;
                     return resultEntry;
 
