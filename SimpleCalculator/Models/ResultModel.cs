@@ -24,7 +24,7 @@ namespace SimpleCalculator.Models
             try
             {
                 var nodes = Parser.Parse(expression);
-                result = nodes.Select(node => node.Eval(ctx)).Last();
+                result = nodes.Select(node => node.Eval(ctx)).ToArray().Last();
                 ctx.AssignVariable("ans", result);
             }
             catch (SyntaxException ex)
