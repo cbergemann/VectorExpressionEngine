@@ -64,6 +64,18 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(t.Token, Token.Assignment); t.NextToken();
             Assert.AreEqual(t.Token, Token.EndOfFile);
 
+            testString = "a\r\nb\nc;d\re";
+            t = new Tokenizer(new StringReader(testString));
+            Assert.AreEqual(t.Token, Token.Identifier); t.NextToken();
+            Assert.AreEqual(t.Token, Token.EndOfExpression); t.NextToken();
+            Assert.AreEqual(t.Token, Token.Identifier); t.NextToken();
+            Assert.AreEqual(t.Token, Token.EndOfExpression); t.NextToken();
+            Assert.AreEqual(t.Token, Token.Identifier); t.NextToken();
+            Assert.AreEqual(t.Token, Token.EndOfExpression); t.NextToken();
+            Assert.AreEqual(t.Token, Token.Identifier); t.NextToken();
+            Assert.AreEqual(t.Token, Token.EndOfExpression); t.NextToken();
+            Assert.AreEqual(t.Token, Token.Identifier); t.NextToken();
+            Assert.AreEqual(t.Token, Token.EndOfFile);
 
             Assert.AreEqual(Parser.ParseSingle("1").Eval(null), 1.0);
             Assert.AreEqual(Parser.ParseSingle("1.0").Eval(null), 1.0);
@@ -172,8 +184,14 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(Parser.ParseSingle("-5^2").Eval(null), -25.0);
             Assert.AreEqual(Parser.ParseSingle("(-5)^2").Eval(null), 25.0);
             Assert.AreEqual(Parser.ParseSingle("(-5.5)^(-2.2)").Eval(null), double.NaN);
+        }
 
+        [TestMethod]
+        public void ElementAccess()
+        {
             Assert.AreEqual(Parser.ParseSingle("[1,2,3][1]").Eval(null), 2.0);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[1,2,3][4]").Eval(null), "array index 4 is out of range 0...2");
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("1[4]").Eval(null), "array element access not defined for types System.Double[System.Double]");
         }
 
         [TestMethod]

@@ -29,7 +29,7 @@ namespace VectorExpressionEngine
             }
             catch (IndexOutOfRangeException ex)
             {
-                throw new SyntaxException($"array index {idx} is out of range 0...{array.Length}", ex);
+                throw new SyntaxException($"array index {idx} is out of range 0...{array.Length-1}", ex);
             }
         }
 
