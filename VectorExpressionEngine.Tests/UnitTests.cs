@@ -347,13 +347,12 @@ namespace VectorExpressionEngine.Tests
 
             public object ResolveVariable(string name)
             {
-                switch (name)
+                return name switch
                 {
-                    case "pi": return Math.PI;
-                    case "r": return _r;
-                }
-
-                throw new SyntaxException($"Unknown variable: '{name}'");
+                    "pi" => Math.PI,
+                    "r" => _r,
+                    _ => throw new SyntaxException($"Unknown variable: '{name}'"),
+                };
             }
 
             public object CallFunction(string name, object[] arguments)
@@ -421,14 +420,12 @@ namespace VectorExpressionEngine.Tests
 
         private class MyLibrary
         {
-            public ReflectionContext Context { get; set; }
-
             [Expression("pi", isConstant: true)] public static double Pi => Math.PI;
 
             [Expression("r", isConstant: false)] public static double R => 10;
 
             [Expression("rectArea")]
-            public double RectArea(double width, double height)
+            public static double RectArea(double width, double height)
             {
                 return width * height;
             }
@@ -441,7 +438,7 @@ namespace VectorExpressionEngine.Tests
             }
 
             [Expression("rectPerimeter", isConstant: true)]
-            public double RectPerimeter(double width, double height)
+            public static double RectPerimeter(double width, double height)
             {
                 return (width + height) * 2;
             }
@@ -455,7 +452,6 @@ namespace VectorExpressionEngine.Tests
 
             // Create a context that uses the library
             var ctx = new ReflectionContext(lib);
-            lib.Context = ctx;
 
             // Test
             Assert.AreEqual(Parser.ParseSingle("rectArea(10,20)").Eval(ctx), 200.0);
@@ -471,7 +467,7 @@ namespace VectorExpressionEngine.Tests
         class MyLibraryTyped : BasicOperations
         {
             [Expression]
-            public object S(string name)
+            public static object S(string name)
             {
                 if (name == "S1")
                 {
@@ -531,25 +527,25 @@ namespace VectorExpressionEngine.Tests
             Assert.IsTrue(node is NodeObject nodeObject2 && ((double[])nodeObject2.Eval(null)).SequenceEqual(new [] { 3.0, 5.0, 7.0 }));
 
             node = TreeOptimizer.Optimize(Parser.ParseSingle("call([1, 2, 3] + [2, 3, 4], 1 + 1)"));
-            Assert.IsTrue(node is NodeFunctionCall nodeObject3 && nodeObject3.FunctionName == "call" && nodeObject3.Arguments[0] is NodeObject && nodeObject3.Arguments[1] is NodeObject);
+            Assert.IsTrue(node is NodeFunctionCall { FunctionName: "call" } nodeObject3 && nodeObject3.Arguments[0] is NodeObject && nodeObject3.Arguments[1] is NodeObject);
 
             node = TreeOptimizer.Optimize(Parser.ParseSingle("rectArea(1, 'asd')"), ctx);
             Assert.IsTrue(node is NodeObject nodeObject4 && (string)nodeObject4.Eval(null) == "makes no sense");
 
             node = TreeOptimizer.Optimize(Parser.ParseSingle("rectArea(1, 2)"), ctx);
-            Assert.IsTrue(node is NodeFunctionCall nodeObject5 && nodeObject5.FunctionName == "rectArea");
+            Assert.IsTrue(node is NodeFunctionCall { FunctionName: "rectArea" });
 
             node = TreeOptimizer.Optimize(Parser.ParseSingle("rectArea(1, 2)"));
-            Assert.IsTrue(node is NodeFunctionCall nodeObject8 && nodeObject8.FunctionName == "rectArea");
+            Assert.IsTrue(node is NodeFunctionCall { FunctionName: "rectArea" });
 
             node = TreeOptimizer.Optimize(Parser.ParseSingle("pi"), ctx);
             Assert.IsTrue(node is NodeObject nodeObject6 && Math.Abs((double)nodeObject6.Eval(null) - Math.PI) < double.Epsilon);
 
             node = TreeOptimizer.Optimize(Parser.ParseSingle("r"), ctx);
-            Assert.IsTrue(node is NodeVariable nodeObject7 && nodeObject7.VariableName == "r");
+            Assert.IsTrue(node is NodeVariable { VariableName: "r" });
 
             node = TreeOptimizer.Optimize(Parser.ParseSingle("r"));
-            Assert.IsTrue(node is NodeVariable nodeObject9 && nodeObject9.VariableName == "r");
+            Assert.IsTrue(node is NodeVariable { VariableName: "r" });
         }
     }
 }

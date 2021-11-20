@@ -62,8 +62,7 @@ namespace VectorExpressionEngine
                     return lhs;
                 }
 
-                var varNode = lhs as NodeVariable;
-                if (varNode == null)
+                if (!(lhs is NodeVariable varNode))
                 {
                     throw new SyntaxException("Cannot assign value to non variable node");
                 }

@@ -6,96 +6,95 @@ using System.ComponentModel;
 using System.Windows.Input;
 using VectorExpressionEngine;
 
-namespace SimpleCalculator.Models
+namespace SimpleCalculator.Models;
+
+public class MainModel : INotifyPropertyChanged
 {
-    public class MainModel : INotifyPropertyChanged
+    public event EventHandler<ResultModel> ResultAdded;
+
+    public event EventHandler<ResultModel> HistoryRecalled;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private int _historyCounter;
+
+    private readonly IContext _ctx;
+
+    public MainModel()
     {
-        public event EventHandler<ResultModel> ResultAdded;
+        var lib = new MathLibrary();
+        var baseContext = new ReflectionContext(lib);
+        _ctx = new ScopedContext(baseContext);
 
-        public event EventHandler<ResultModel> HistoryRecalled;
+        GoUpInHistory = new RelayCommand(GoUpInHistory_Executed);
+        GoDownInHistory = new RelayCommand(GoDownInHistory_Executed);
+        Evaluate = new RelayCommand(Evaluate_Executed, Evaluate_CanExecute);
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    public ICommand GoUpInHistory { get; }
 
-        private int _historyCounter;
-
-        private readonly IContext _ctx;
-
-        public MainModel()
+    private void GoUpInHistory_Executed(object parameter)
+    {
+        if (Results.Count - _historyCounter <= 0)
         {
-            var lib = new MathLibrary();
-            var baseContext = new ReflectionContext(lib);
-            _ctx = new ScopedContext(baseContext);
-
-            GoUpInHistory = new RelayCommand(GoUpInHistory_Executed);
-            GoDownInHistory = new RelayCommand(GoDownInHistory_Executed);
-            Evaluate = new RelayCommand(Evaluate_Executed, Evaluate_CanExecute);
+            return;
         }
 
-        public ICommand GoUpInHistory { get; }
+        var result = Results[Results.Count - _historyCounter - 1];
+        _historyCounter++;
 
-        private void GoUpInHistory_Executed(object parameter)
+        ExpressionText = result.Expression;
+        HistoryRecalled?.Invoke(this, result);
+    }
+
+    public ICommand GoDownInHistory { get; }
+
+    private void GoDownInHistory_Executed(object parameter)
+    {
+        if (Results.Count - _historyCounter + 1 >= Results.Count)
         {
-            if (Results.Count - _historyCounter <= 0)
-            {
-                return;
-            }
-
-            var result = Results[Results.Count - _historyCounter - 1];
-            _historyCounter++;
-
-            ExpressionText = result.Expression;
-            HistoryRecalled?.Invoke(this, result);
-        }
-
-        public ICommand GoDownInHistory { get; }
-
-        private void GoDownInHistory_Executed(object parameter)
-        {
-            if (Results.Count - _historyCounter + 1 >= Results.Count)
-            {
-                ExpressionText = string.Empty;
-                _historyCounter = 0;
-                return;
-            }
-
-            var result = Results[Results.Count - _historyCounter + 1];
-            _historyCounter--;
-
-            ExpressionText = result.Expression;
-            HistoryRecalled?.Invoke(this, result);
-        }
-
-        public ICommand Evaluate { get; }
-
-        private bool Evaluate_CanExecute(object parameter)
-        {
-            return !string.IsNullOrWhiteSpace(ExpressionText);
-        }
-
-        public void Evaluate_Executed(object parameter)
-        {
-            var exp = ExpressionText.Trim();
             ExpressionText = string.Empty;
             _historyCounter = 0;
-
-            var resultEntry = ResultModel.FromExpression(_ctx, exp);
-
-            Results.Add(resultEntry);
-            ResultAdded?.Invoke(this, resultEntry);
+            return;
         }
 
-        public ObservableCollection<ResultModel> Results { get; } = new ObservableCollection<ResultModel>();
+        var result = Results[Results.Count - _historyCounter + 1];
+        _historyCounter--;
 
-        private string _expressionText = string.Empty;
+        ExpressionText = result.Expression;
+        HistoryRecalled?.Invoke(this, result);
+    }
 
-        public string ExpressionText
+    public ICommand Evaluate { get; }
+
+    private bool Evaluate_CanExecute(object parameter)
+    {
+        return !string.IsNullOrWhiteSpace(ExpressionText);
+    }
+
+    public void Evaluate_Executed(object parameter)
+    {
+        var exp = ExpressionText.Trim();
+        ExpressionText = string.Empty;
+        _historyCounter = 0;
+
+        var resultEntry = ResultModel.FromExpression(_ctx, exp);
+
+        Results.Add(resultEntry);
+        ResultAdded?.Invoke(this, resultEntry);
+    }
+
+    public ObservableCollection<ResultModel> Results { get; } = new();
+
+    private string _expressionText = string.Empty;
+
+    public string ExpressionText
+    {
+        get => _expressionText;
+        set
         {
-            get => _expressionText;
-            set
-            {
-                _expressionText = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExpressionText)));
-            }
+            _expressionText = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExpressionText)));
         }
     }
 }

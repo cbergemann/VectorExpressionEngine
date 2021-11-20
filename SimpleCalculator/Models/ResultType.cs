@@ -1,10 +1,9 @@
-﻿namespace SimpleCalculator.Models
+﻿namespace SimpleCalculator.Models;
+
+public enum ResultType
 {
-    public enum ResultType
-    {
-        Value,
-        LineSeries,
-        Error,
-        Null,
-    }
+    Value,
+    LineSeries,
+    Error,
+    Null,
 }

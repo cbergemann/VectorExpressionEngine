@@ -1,30 +1,29 @@
 ﻿using SimpleCalculator.Models;
 
-namespace SimpleCalculator.Windows
+namespace SimpleCalculator.Windows;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow
+    private MainModel MainModel => (MainModel)DataContext;
+
+    public MainWindow()
     {
-        private MainModel MainModel => (MainModel)DataContext;
+        InitializeComponent();
 
-        public MainWindow()
-        {
-            InitializeComponent();
+        MainModel.HistoryRecalled += MainModel_HistoryRecalled;
+        MainModel.ResultAdded += MainModel_ResultAdded;
+    }
 
-            MainModel.HistoryRecalled += MainModel_HistoryRecalled;
-            MainModel.ResultAdded += MainModel_ResultAdded;
-        }
+    private void MainModel_ResultAdded(object sender, ResultModel e)
+    {
+        resultScrollView.ScrollToEnd();
+    }
 
-        private void MainModel_ResultAdded(object sender, ResultModel e)
-        {
-            resultScrollView.ScrollToEnd();
-        }
-
-        private void MainModel_HistoryRecalled(object sender, ResultModel e)
-        {
-            expressionInputBox.CaretIndex = expressionInputBox.Text.Length;
-        }
+    private void MainModel_HistoryRecalled(object sender, ResultModel e)
+    {
+        expressionInputBox.CaretIndex = expressionInputBox.Text.Length;
     }
 }
