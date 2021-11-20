@@ -161,11 +161,11 @@ public class MathLibrary : ExtendedMath
     {
         NormalizeCoefficients(ref b, ref a);
 
-        var lx = x.Length;
-        var n = a.Length;
-        var lrefl = 3 * n;
+        var dataLength = x.Length;
+        var filterOrder = a.Length;
+        var requiredDataLength = 3 * filterOrder;
 
-        if (lx <= lrefl)
+        if (dataLength <= requiredDataLength)
         {
             throw new SyntaxException("Input data too short! Data must have length more than 3 times filter order.");
         }
@@ -179,22 +179,18 @@ public class MathLibrary : ExtendedMath
         }
         else
         {
-            si = Enumerable.Repeat(0.0, n).ToArray();
+            si = Enumerable.Repeat(0.0, filterOrder).ToArray();
         }
 
-        var v1 = x.Skip(1).Reverse().Select(x1 => 2 * x.First() - x1);
-        var v2 = x;
-        var v3 = x.Reverse().Skip(1).Select(x1 => 2 * x.Last() - x1);
-        var v = v1.Concat(v2).Concat(v3).ToArray();
+        var leadIn = x.Skip(1).Reverse().Select(x1 => 2 * x.First() - x1);
+        var leadOut = x.Reverse().Skip(1).Select(x1 => 2 * x.Last() - x1);
+        var paddedData = leadIn.Concat(x).Concat(leadOut).ToArray();
 
-        // forward filter
-        var vo1 = Filter(b, a, v, si.Select(si1 => si1 * v.First()).ToArray());
+        var forwardFilterData = Filter(b, a, paddedData, si.Select(si1 => si1 * paddedData.First()).ToArray());
+        var reverseFilterData = Filter(b, a, forwardFilterData.Reverse().ToArray(), si.Select(si1 => si1 * forwardFilterData.Last()).ToArray()).Reverse();
 
-        // reverse filter
-        var vo2 = Filter(b, a, vo1.Reverse().ToArray(), si.Select(si1 => si1 * vo1.Last()).ToArray()).Reverse();
-
-        var y = vo2.Skip(lrefl).Take(lx).ToArray();
-        return y;
+        var filteredData = reverseFilterData.Skip(requiredDataLength).Take(dataLength).ToArray();
+        return filteredData;
     }
 
     [Expression(isConstant: true)]
