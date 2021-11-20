@@ -1,6 +1,7 @@
 # VectorExpressionEngine
 
 [![MSBuild](https://github.com/cbergemann/VectorExpressionEngine/actions/workflows/msbuild.yml/badge.svg)](https://github.com/cbergemann/VectorExpressionEngine/actions/workflows/msbuild.yml)
+![Nuget](https://img.shields.io/nuget/v/VectorExpressionEngine)
 
 This library can be used to formulate mathematical expressions and evaluate them. The library can handle abitrary types, and it supports working with arrays/vectors in an elementwise maner (similar to MATLAB). This makes working with array data, like time series, very fast.
 
