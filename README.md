@@ -69,3 +69,5 @@ It also contains basic logical operations, operating on bool and bool-Arrays.
 The library comes with an example in form of a simple calculator. It can work with equations, store results in variables and call a few functions. Results can be plotted like with a graphical calculator.
 
 You can find this example in the "SimpleCalculator" directory.
+
+![_simpleCalculator_sshot](https://user-images.githubusercontent.com/19253536/142732271-c17473a5-bc1c-4dcc-9ebd-060a6e0d02e5.png)
