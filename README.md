@@ -64,6 +64,28 @@ var finalResult = results.Last(); // this will contain the result of the calcula
 The library comes with a library containing basic operations. It can be found in the BasicOperations class. The functions declared within can work with scalar double values, as well as with double-Arrays and any combination of the two.
 It also contains basic logical operations, operating on bool and bool-Arrays.
 
+```C#
+// setup BasicOperations library, which contains various basic functions with array support
+var library = new BasicOperations();
+
+// create context with the new library
+var reflectionContext = new ReflectionContext(library);
+
+// add a scoped context, to allow storing of variables
+var scopedContext = new ScopedContext(reflectionContext);
+
+// set variables 'x' and 'y' in the context as double array
+Parser.ParseSingle("x = [1, 2, 3]").Eval(scopedContext); // ignore result - this would be the array [1, 2, 3]
+Parser.ParseSingle("y = [2, 3, 4]").Eval(scopedContext); // ignore result - this would be the array [2, 3, 4]
+
+var result = Parser.ParseSingle("x^2 + y").Eval(scopedContext);
+// result will be [1^2 + 2, 2^2 + 3, 3^2 + 4] = [3, 7, 13]
+
+// this expression uses the BasicOperations library for the 'sqrt' function
+var sqrtResult = Parser.ParseSingle("sqrt(x)").Eval(scopedContext);
+// sqrtResult will be [sqrt(1], sqrt(2], sqrt(3)] = [1, 1.4142, 1.7321]
+```
+
 ## Example Application
 
 The library comes with an example in form of a simple calculator. It can work with equations, store results in variables and call a few functions. Results can be plotted like with a graphical calculator.
