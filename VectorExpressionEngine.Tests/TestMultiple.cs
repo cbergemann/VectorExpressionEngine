@@ -2,7 +2,7 @@
 using System.Linq;
 using VectorExpressionEngine;
 
-namespace UnitTests
+namespace VectorExpressionEngine.Tests
 {
     [TestClass]
     public class TestMultiple

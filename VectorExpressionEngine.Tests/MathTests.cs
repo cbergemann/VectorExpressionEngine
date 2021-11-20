@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SimpleCalculator;
 using SimpleCalculator.Business;
 using System;
 using System.Linq;
 
-namespace UnitTests
+namespace VectorExpressionEngine.Tests
 {
     [TestClass]
     public class MathTests

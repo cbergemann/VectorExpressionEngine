@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSTestExtensions;
 
 namespace VectorExpressionEngine.Tests
 {
@@ -107,11 +106,13 @@ namespace VectorExpressionEngine.Tests
             Assert.IsTrue(((double[])Parser.ParseSingle("[1, 2] + [1]").Eval(null)).SequenceEqual(new double[] { 2, 3 }));
             Assert.IsTrue(((double[])Parser.ParseSingle("[1] + [1, 2]").Eval(null)).SequenceEqual(new double[] { 2, 3 }));
 
+            Assert.ThrowsException<SyntaxException>(() => Parser.ParseSingle("[1, 2] + [1, 2, 3]").Eval(null));
+
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[1, 2] + [1, 2, 3]").Eval(null), "binary operation of different length arrays not defined");
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true + [1, 2, 3]").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[1, 2, 3] + true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("1 + true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true + 1").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true + [1, 2, 3]").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[1, 2, 3] + true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("1 + true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true + 1").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
 
             Assert.IsTrue(((double[])Parser.ParseSingle("[1, 2] - 1").Eval(null)).SequenceEqual(new double[] { 0, 1 }));
             Assert.IsTrue(((double[])Parser.ParseSingle("1 - [1, 2]").Eval(null)).SequenceEqual(new double[] { 0, -1 }));
@@ -121,10 +122,10 @@ namespace VectorExpressionEngine.Tests
             Assert.IsTrue(((double[])Parser.ParseSingle("[1] - [1, 2]").Eval(null)).SequenceEqual(new double[] { 0, -1 }));
 
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[1, 2] - [1, 2, 3]").Eval(null), "binary operation of different length arrays not defined");
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true - [1, 2, 3]").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[1, 2, 3] - true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("1 - true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true - 1").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true - [1, 2, 3]").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[1, 2, 3] - true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("1 - true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true - 1").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
 
         }
 
@@ -149,7 +150,7 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(Parser.ParseSingle("10 + -20 - +30").Eval(null), -40.0);
 
             Assert.IsTrue(((double[])Parser.ParseSingle("-[1, 2]").Eval(null)).SequenceEqual(new double[] { -1, -2 }));
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("-true").Eval(null), "unary operation cannot handle type", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("-true").Eval(null), "unary operation cannot handle type", ExceptionMessageCompareOptions.Contains);
         }
 
         [TestMethod]
@@ -216,15 +217,15 @@ namespace VectorExpressionEngine.Tests
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? [10, 9] : [20, 11, 12]").Eval(null), "ternary operation of different length arrays not defined");
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? [10, 9, 8] : [20, 11]").Eval(null), "ternary operation of different length arrays not defined");
 
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 1 : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 'text' : 1").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? [20, 11] : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 'text' : [20, 11]").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("'text' ? [20, 11] : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? 1 : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? 'text' : 1").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? [20, 11] : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? 'text' : [20, 11]").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 1 : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 'text' : 1").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? [20, 11] : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 'text' : [20, 11]").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("'text' ? [20, 11] : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? 1 : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? 'text' : 1").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? [20, 11] : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? 'text' : [20, 11]").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
         }
 
         [TestMethod]
@@ -299,7 +300,7 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(Parser.ParseSingle("'test ' + 10").Eval(null), "test 10");
             Assert.AreEqual(Parser.ParseSingle("10 + 'test '").Eval(null), "10test ");
 
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("'test' + true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains, ExceptionInheritanceOptions.Exact);
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("'test' + true").Eval(null), "binary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
         }
 
         [TestMethod]

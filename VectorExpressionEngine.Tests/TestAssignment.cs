@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MSTestExtensions;
 using VectorExpressionEngine;
 
-namespace UnitTests
+namespace VectorExpressionEngine.Tests
 {
     [TestClass]
     public class TestAssignment
