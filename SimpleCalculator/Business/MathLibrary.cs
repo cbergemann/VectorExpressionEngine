@@ -212,12 +212,12 @@ public class MathLibrary : ExtendedMath
         }
 
         // normalize filter coefficients
-        for (int it = b.Length; it >= 0; --it)
+        for (int it = b.Length - 1; it >= 0; --it)
         {
             b[it] /= a[0];
         }
 
-        for (int it = a.Length; it >= 0; --it)
+        for (int it = a.Length - 1; it >= 0; --it)
         {
             a[it] /= a[0];
         }
