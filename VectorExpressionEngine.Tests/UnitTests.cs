@@ -95,6 +95,11 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(Parser.ParseSingle("\"abc\"").Eval(null), "abc");
             Assert.AreEqual(Parser.ParseSingle("'abc'").Eval(null), "abc");
 
+            Assert.AreEqual(Parser.ParseSingle("\" \\r \\n \\t \\' \\\" \\\\ \"").Eval(null), " \r \n \t ' \" \\ ");
+
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("'abc\\").Eval(null), "Unterminated string constant");
+            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("'abc\\a'").Eval(null), "Undefined escape sequence '\\a'");
+
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("'abc").Eval(null), "Unterminated string constant");
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("\"abc").Eval(null), "Unterminated string constant");
 

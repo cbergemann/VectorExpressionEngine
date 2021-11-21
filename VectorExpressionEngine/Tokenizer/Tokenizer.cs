@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -216,6 +217,16 @@ namespace VectorExpressionEngine
             return false;
         }
 
+        private static readonly Dictionary<char, char> EscapeCharacters = new Dictionary<char, char>
+            {
+                { '\\', '\\' },
+                { '\'', '\'' },
+                { '"', '"' },
+                { 'r', '\r' },
+                { 'n', '\n' },
+                { 't', '\t' },
+            };
+
         private bool TryParseString()
         {
             if (_currentChar != '"' && _currentChar != '\'')
@@ -235,7 +246,26 @@ namespace VectorExpressionEngine
                     throw new SyntaxException("Unterminated string constant");
                 }
 
-                sb.Append(_currentChar);
+                if (_currentChar == '\\')
+                {
+                    NextChar();
+                    if (_currentChar == '\0')
+                    {
+                        throw new SyntaxException("Unterminated string constant");
+                    }
+
+                    if (!EscapeCharacters.TryGetValue(_currentChar, out var replacement))
+                    {
+                        throw new SyntaxException($"Undefined escape sequence '\\{_currentChar}'");
+                    }
+
+                    sb.Append(replacement);
+                }
+                else
+                {
+                    sb.Append(_currentChar);
+                }
+
                 NextChar();
             }
 
