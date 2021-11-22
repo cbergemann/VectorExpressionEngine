@@ -93,3 +93,7 @@ The library comes with an example in form of a simple calculator. It can work wi
 You can find this example in the "SimpleCalculator" directory.
 
 ![_simpleCalculator_sshot](https://user-images.githubusercontent.com/19253536/142732271-c17473a5-bc1c-4dcc-9ebd-060a6e0d02e5.png)
+
+## Acknowledgement
+
+This library is inspired by [toptensoftware/SimpleExpressionEngine](https://github.com/toptensoftware/SimpleExpressionEngine). This piece of software served as a great introduction to the topic for me. Thanks to toptensoftware for releasing this into the public domain!
