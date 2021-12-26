@@ -92,7 +92,7 @@ namespace VectorExpressionEngine
 
         public void AssignVariable(string name, object value)
         {
-            throw new SyntaxException($"cannot assign variable - context is read-only");
+            throw new SyntaxException("cannot assign variable - context is read-only");
         }
     }
 }
