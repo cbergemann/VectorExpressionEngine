@@ -307,25 +307,25 @@ namespace VectorExpressionEngine
             }
 
             var sb = new StringBuilder();
-            bool haveDecimalPoint = false;
+            var hasDecimalPoint = false;
 
-            while (char.IsDigit(_currentChar) || (!haveDecimalPoint && _currentChar == '.'))
+            while (char.IsDigit(_currentChar) || (!hasDecimalPoint && _currentChar == '.'))
             {
                 sb.Append(_currentChar);
-                haveDecimalPoint = haveDecimalPoint || _currentChar == '.';
+                hasDecimalPoint = hasDecimalPoint || _currentChar == '.';
                 NextChar();
             }
 
             if (_currentChar == 'e' || _currentChar == 'E')
             {
-                bool haveNegativeSign = false;
+                var hasExponentSign = false;
 
                 sb.Append(_currentChar);
                 NextChar();
-                while (char.IsDigit(_currentChar) || (!haveNegativeSign && _currentChar == '-'))
+                while (char.IsDigit(_currentChar) || (!hasExponentSign && (_currentChar == '-' || _currentChar == '+')))
                 {
                     sb.Append(_currentChar);
-                    haveNegativeSign = haveNegativeSign || _currentChar == '-';
+                    hasExponentSign = hasExponentSign || _currentChar == '-' || _currentChar == '+';
                     NextChar();
                 }
             }

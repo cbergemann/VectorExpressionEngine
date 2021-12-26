@@ -88,6 +88,7 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(Parser.ParseSingle("1.0e-10").Eval(null), 1.0e-10);
             Assert.AreEqual(Parser.ParseSingle("-1.0e-10").Eval(null), -1.0e-10);
             Assert.AreEqual(Parser.ParseSingle("-.0e-10").Eval(null), 0.0);
+            Assert.AreEqual(Parser.ParseSingle("-1.0e+10").Eval(null), -1.0e+10);
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("1e").Eval(null), "could not parse number: '1e'");
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("1e1.1").Eval(null), "Unexpected characters at end of expression");
 
