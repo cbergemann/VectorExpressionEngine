@@ -6,7 +6,7 @@ using System.Text;
 
 namespace VectorExpressionEngine
 {
-    public class Tokenizer
+    public class Tokenizer : ITokenizer
     {
         public Tokenizer(TextReader reader)
         {

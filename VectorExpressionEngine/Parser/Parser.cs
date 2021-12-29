@@ -7,12 +7,12 @@ namespace VectorExpressionEngine
 {
     public class Parser
     {
-        public Parser(Tokenizer tokenizer)
+        public Parser(ITokenizer tokenizer)
         {
             _tokenizer = tokenizer;
         }
 
-        private readonly Tokenizer _tokenizer;
+        private readonly ITokenizer _tokenizer;
 
         public INode[] ParseExpression()
         {
@@ -542,7 +542,7 @@ namespace VectorExpressionEngine
             }
         }
 
-        public static INode[] Parse(Tokenizer tokenizer)
+        public static INode[] Parse(ITokenizer tokenizer)
         {
             var parser = new Parser(tokenizer);
             return parser.ParseExpression();
