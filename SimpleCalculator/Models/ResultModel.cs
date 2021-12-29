@@ -79,7 +79,7 @@ public class ResultModel
                 return resultEntry;
 
             default:
-                resultEntry.Result = "Unknown Result!!!";
+                resultEntry.Result = $"Unknown result type, cannot handle {result.GetType()}!";
                 resultEntry.Type = ResultType.Error;
                 return resultEntry;
         }
