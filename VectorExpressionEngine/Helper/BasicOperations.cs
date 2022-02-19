@@ -25,6 +25,11 @@ namespace VectorExpressionEngine
 
             try
             {
+                if (idx < 0)
+                {
+                    idx = array.LongLength + idx;
+                }
+
                 return array.GetValue(idx);
             }
             catch (IndexOutOfRangeException ex)
