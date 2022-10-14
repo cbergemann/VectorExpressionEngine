@@ -36,9 +36,9 @@ namespace VectorExpressionEngine
 
         public MethodInfo MethodInfo { get; }
 
-        public bool IsMatch(string name, IReadOnlyList<Type> argumentTypes)
+        public bool IsMatch(IReadOnlyList<Type> argumentTypes)
         {
-            if (name != Name || argumentTypes.Count != ArgumentTypes.Length)
+            if (argumentTypes.Count != ArgumentTypes.Length)
             {
                 return false;
             }

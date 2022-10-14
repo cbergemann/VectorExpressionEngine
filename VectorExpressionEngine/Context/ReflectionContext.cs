@@ -12,27 +12,26 @@ namespace VectorExpressionEngine
             _targetObject = targetObject;
 
             var pis = _targetObject.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
-            _reflectedProperties = pis.Where(mi => mi.CustomAttributes.Any(a => a.AttributeType == typeof(ExpressionAttribute))).Select(mi => new CachedProperty(mi)).ToList();
+            _reflectedProperties = pis.Where(mi => mi.CustomAttributes.Any(a => a.AttributeType == typeof(ExpressionAttribute))).Select(mi => new CachedProperty(mi)).ToDictionary(k => k.Name);
 
             var mis = _targetObject.GetType().GetMethods(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
-            _reflectedMethods = mis.Where(mi => mi.CustomAttributes.Any(a => a.AttributeType == typeof(ExpressionAttribute))).Select(k => new CachedMethod(k)).ToList();
+            _reflectedMethods = mis.Where(mi => mi.CustomAttributes.Any(a => a.AttributeType == typeof(ExpressionAttribute))).Select(k => new CachedMethod(k)).ToLookup(k => k.Name);
         }
 
         private readonly object _targetObject;
 
-        private readonly List<CachedProperty> _reflectedProperties;
+        private readonly Dictionary<string, CachedProperty> _reflectedProperties;
 
-        private readonly List<CachedMethod> _reflectedMethods;
+        private readonly ILookup<string, CachedMethod> _reflectedMethods;
 
         public object ResolveVariable(string name)
         {
-            var cachedProperty = _reflectedProperties.FirstOrDefault(p => p.Name == name);
-            if (cachedProperty != null)
+            if (_reflectedProperties.TryGetValue(name, out var cachedProperty))
             {
                 return cachedProperty.PropertyInfo.GetValue(_targetObject);
             }
 
-            var cachedMethod = _reflectedMethods.FirstOrDefault(m => m.Name == name && m.ArgumentTypes.Length == 0);
+            var cachedMethod = _reflectedMethods[name].FirstOrDefault(m => m.ArgumentTypes.Length == 0);
             if (cachedMethod != null)
             {
                 try
@@ -52,7 +51,7 @@ namespace VectorExpressionEngine
         {
             var argumentTypes = arguments.Select(a => a.GetType()).ToArray();
 
-            var cachedMethod = _reflectedMethods.FirstOrDefault(m => m.IsMatch(name, argumentTypes));
+            var cachedMethod = _reflectedMethods[name].FirstOrDefault(m => m.IsMatch(argumentTypes));
             if (cachedMethod == null)
             {
                 throw new SyntaxException($"No function '{name}' found for arguments of type '{string.Join(", ", arguments.Select(a => a.GetType().Name))}'");
@@ -70,8 +69,7 @@ namespace VectorExpressionEngine
 
         public bool IsConstantExpressionVariable(string name)
         {
-            var cachedProperty = _reflectedProperties.FirstOrDefault(p => p.Name == name);
-            if (cachedProperty == null)
+            if (!_reflectedProperties.TryGetValue(name, out var cachedProperty))
             {
                 throw new SyntaxException($"Unknown variable: '{name}'");
             }
@@ -81,7 +79,7 @@ namespace VectorExpressionEngine
 
         public bool IsConstantExpressionCall(string name, Type[] argumentTypes)
         {
-            var cachedMethod = _reflectedMethods.FirstOrDefault(m => m.IsMatch(name, argumentTypes));
+            var cachedMethod = _reflectedMethods[name].FirstOrDefault(m => m.IsMatch(argumentTypes));
             if (cachedMethod == null)
             {
                 throw new SyntaxException($"No function '{name}' found for arguments of type '{string.Join(", ", argumentTypes.Select(t => t.Name))}'");
