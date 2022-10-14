@@ -45,6 +45,19 @@ namespace VectorExpressionEngine
             return TernaryVectorAwareOperation<bool, double, double, double>((v1, v2, v3) => v1 ? v2 : v3, a, b, c);
         }
 
+        public static object TernaryIfDeferred(INode a, INode b, INode c, IContext ctx)
+        {
+            var check = a.Eval(ctx);
+            if (check is bool checkValue)
+            {
+                return checkValue ? b.Eval(ctx) : c.Eval(ctx);
+            }
+
+            var bvalue = b.Eval(ctx);
+            var cvalue = c.Eval(ctx);
+            return TernaryIf(check, bvalue, cvalue);
+        }
+
         #endregion Ternary Operators
 
         #region Binary Operators
@@ -138,10 +151,34 @@ namespace VectorExpressionEngine
         {
             return BinaryVectorAwareOperation<bool, bool, bool>((v1, v2) => v1 && v2, a, b);
         }
+        
+        public static object AndDeferred(INode a, INode b, IContext ctx)
+        {
+            var check = a.Eval(ctx);
+            if (check is bool checkValue && !checkValue)
+            {
+                return false;
+            }
+
+            var bvalue = b.Eval(ctx);
+            return And(check, bvalue);
+        }
 
         public static object Or(object a, object b)
         {
             return BinaryVectorAwareOperation<bool, bool, bool>((v1, v2) => v1 || v2, a, b);
+        }
+
+        public static object OrDeferred(INode a, INode b, IContext ctx)
+        {
+            var check = a.Eval(ctx);
+            if (check is bool checkValue && checkValue)
+            {
+                return true;
+            }
+
+            var bvalue = b.Eval(ctx);
+            return Or(check, bvalue);
         }
 
         #endregion Binary Operators

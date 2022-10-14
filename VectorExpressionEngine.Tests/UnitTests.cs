@@ -207,10 +207,10 @@ namespace VectorExpressionEngine.Tests
             Assert.AreEqual(Parser.ParseSingle("false ? 10 : 20").Eval(null), 20.0);
             Assert.AreEqual(Parser.ParseSingle("1 < 2 ? 10 : 20").Eval(null), 10.0);
 
-            Assert.IsTrue(((double[])Parser.ParseSingle("true ? 10 : [10, 20]").Eval(null)).SequenceEqual(new [] { 10.0, 10.0 }));
+            Assert.AreEqual(10.0, Parser.ParseSingle("true ? 10 : [10, 20]").Eval(null));
             Assert.IsTrue(((double[])Parser.ParseSingle("false ? 10 : [10, 20]").Eval(null)).SequenceEqual(new [] { 10.0, 20.0 }));
             Assert.IsTrue(((double[])Parser.ParseSingle("true ? [10, 11] : 20").Eval(null)).SequenceEqual(new [] { 10.0, 11.0 }));
-            Assert.IsTrue(((double[])Parser.ParseSingle("false ? [10, 11] : 20").Eval(null)).SequenceEqual(new [] { 20.0, 20.0 }));
+            Assert.AreEqual(20.0, Parser.ParseSingle("false ? [10, 11] : 20").Eval(null));
             Assert.IsTrue(((double[])Parser.ParseSingle("true ? [10, 11] : [10, 20]").Eval(null)).SequenceEqual(new [] { 10.0, 11.0 }));
             Assert.IsTrue(((double[])Parser.ParseSingle("false ? [10, 11] : [10, 20]").Eval(null)).SequenceEqual(new [] { 10.0, 20.0 }));
 
@@ -234,17 +234,16 @@ namespace VectorExpressionEngine.Tests
             Assert.IsTrue(((double[])Parser.ParseSingle("[true, true] ? [20] : [10, 11]").Eval(null)).SequenceEqual(new [] { 20.0, 20.0 }));
             Assert.IsTrue(((double[])Parser.ParseSingle("[true, true] ? [20, 21] : [10]").Eval(null)).SequenceEqual(new [] { 20.0, 21.0 }));
 
+            Assert.IsTrue(((double[])Parser.ParseSingle("true ? [10, 9] : [20, 11, 12]").Eval(null)).SequenceEqual(new[] { 10.0, 9.0 }));
 
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, false] ? [20, 11, 12] : 10").Eval(null), "ternary operation of different length arrays not defined");
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, false] ? 10 : [20, 11, 12]").Eval(null), "ternary operation of different length arrays not defined");
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? [10, 9] : [20, 11, 12]").Eval(null), "ternary operation of different length arrays not defined");
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? [10, 9] : [20, 11, 12]").Eval(null), "ternary operation of different length arrays not defined");
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? [10, 9, 8] : [20, 11]").Eval(null), "ternary operation of different length arrays not defined");
 
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 1 : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 'text' : 1").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? [20, 11] : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
-            ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("true ? 'text' : [20, 11]").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
+            Assert.AreEqual(1.0, Parser.ParseSingle("true ? 1 : 'text'").Eval(null));
+            Assert.AreEqual("text", Parser.ParseSingle("false ? 1 : 'text'").Eval(null));
+
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("'text' ? [20, 11] : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? 1 : 'text'").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);
             ThrowsAssert.Throws<SyntaxException>(() => Parser.ParseSingle("[true, true] ? 'text' : 1").Eval(null), "ternary operation cannot handle types", ExceptionMessageCompareOptions.Contains);

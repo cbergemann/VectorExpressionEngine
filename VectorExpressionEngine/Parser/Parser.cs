@@ -22,7 +22,7 @@ namespace VectorExpressionEngine
             {
                 while (_tokenizer.Token == Token.EndOfExpression)
                 {
-                    expressions.Add(new NodeEmpty());
+                    expressions.Add(NodeEmpty.Empty);
                     _tokenizer.NextToken();
                 }
 
@@ -79,11 +79,11 @@ namespace VectorExpressionEngine
 
             while (true)
             {
-                Func<object, object, object, object> functionCall = null;
+                NodeDeferredTernaryOperation.DeferredTernaryOperation functionCall = null;
                 switch (_tokenizer.Token)
                 {
                     case Token.TernaryIf:
-                        functionCall = BasicOperations.TernaryIf;
+                        functionCall = BasicOperations.TernaryIfDeferred;
                         break;
                 }
 
@@ -105,7 +105,7 @@ namespace VectorExpressionEngine
 
                 var rhs = ParseLogicalOr();
 
-                lhs = new NodeTernaryOperation(functionCall, lhs, middle, rhs);
+                lhs = new NodeDeferredTernaryOperation(functionCall, lhs, middle, rhs);
             }
         }
 
@@ -115,11 +115,11 @@ namespace VectorExpressionEngine
 
             while (true)
             {
-                Func<object, object, object> functionCall = null;
+                NodeDeferredBinaryOperation.DeferredBinaryOperation functionCall = null;
                 switch (_tokenizer.Token)
                 {
                     case Token.LogicalOr:
-                        functionCall = BasicOperations.Or;
+                        functionCall = BasicOperations.OrDeferred;
                         break;
                 }
 
@@ -132,7 +132,7 @@ namespace VectorExpressionEngine
 
                 var rhs = ParseLogicalAnd();
 
-                lhs = new NodeBinaryOperation(functionCall, lhs, rhs);
+                lhs = new NodeDeferredBinaryOperation(functionCall, lhs, rhs);
             }
         }
 
@@ -142,11 +142,11 @@ namespace VectorExpressionEngine
 
             while (true)
             {
-                Func<object, object, object> functionCall = null;
+                NodeDeferredBinaryOperation.DeferredBinaryOperation functionCall = null;
                 switch (_tokenizer.Token)
                 {
                     case Token.LogicalAnd:
-                        functionCall = BasicOperations.And;
+                        functionCall = BasicOperations.AndDeferred;
                         break;
                 }
 
@@ -159,7 +159,7 @@ namespace VectorExpressionEngine
 
                 var rhs = ParseLogical();
 
-                lhs = new NodeBinaryOperation(functionCall, lhs, rhs);
+                lhs = new NodeDeferredBinaryOperation(functionCall, lhs, rhs);
             }
         }
 
@@ -169,7 +169,7 @@ namespace VectorExpressionEngine
 
             while (true)
             {
-                Func<object, object, object> functionCall = null;
+                NodeBinaryOperation.BinaryOperation functionCall = null;
                 switch (_tokenizer.Token)
                 {
                     case Token.Lesser:
@@ -205,7 +205,7 @@ namespace VectorExpressionEngine
 
             while (true)
             {
-                Func<object, object, object> functionCall = null;
+                NodeBinaryOperation.BinaryOperation functionCall = null;
                 switch (_tokenizer.Token)
                 {
                     case Token.Equal:
@@ -235,7 +235,7 @@ namespace VectorExpressionEngine
 
             while (true)
             {
-                Func<object, object, object> functionCall = null;
+                NodeBinaryOperation.BinaryOperation functionCall = null;
                 switch (_tokenizer.Token)
                 {
                     case Token.Add:
@@ -265,7 +265,7 @@ namespace VectorExpressionEngine
 
             while (true)
             {
-                Func<object, object, object> functionCall = null;
+                NodeBinaryOperation.BinaryOperation functionCall = null;
                 switch (_tokenizer.Token)
                 {
                     case Token.Multiply:

@@ -4,14 +4,16 @@ namespace VectorExpressionEngine
 {
     public class NodeBinaryOperation : INode
     {
-        public NodeBinaryOperation(Func<object, object, object> op, INode p1, INode p2)
+        public delegate object BinaryOperation(object p1, object p2);
+
+        public NodeBinaryOperation(BinaryOperation op, INode p1, INode p2)
         {
             Operation = op;
             Parameter1 = p1;
             Parameter2 = p2;
         }
 
-        public Func<object, object, object> Operation { get; }
+        public BinaryOperation Operation { get; }
 
         public INode Parameter1 { get; }
 

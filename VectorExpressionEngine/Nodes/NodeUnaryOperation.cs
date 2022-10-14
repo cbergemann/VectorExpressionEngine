@@ -4,13 +4,15 @@ namespace VectorExpressionEngine
 {
     public class NodeUnaryOperation : INode
     {
-        public NodeUnaryOperation(Func<object, object> op, INode p1)
+        public delegate object UnaryOperation(object p2);
+
+        public NodeUnaryOperation(UnaryOperation op, INode p1)
         {
             Operation = op;
             Parameter1 = p1;
         }
 
-        public Func<object, object> Operation { get; }
+        public UnaryOperation Operation { get; }
 
         public INode Parameter1 { get; }
 

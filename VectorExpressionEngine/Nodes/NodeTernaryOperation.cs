@@ -4,7 +4,9 @@ namespace VectorExpressionEngine
 {
     public class NodeTernaryOperation : INode
     {
-        public NodeTernaryOperation(Func<object, object, object, object> op, INode p1, INode p2, INode p3)
+        public delegate object TernaryOperation(object p1, object p2, object p3);
+
+        public NodeTernaryOperation(TernaryOperation op, INode p1, INode p2, INode p3)
         {
             Operation = op;
             Parameter1 = p1;
@@ -12,7 +14,7 @@ namespace VectorExpressionEngine
             Parameter3 = p3;
         }
 
-        public Func<object, object, object, object> Operation { get; }
+        public TernaryOperation Operation { get; }
 
         public INode Parameter1 { get; }
 
