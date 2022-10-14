@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Constantin Bergemann</Authors>
     <Description>A library to parse and evaluate mathematical expressions with inbuilt elementwise vector operations</Description>
-    <Copyright>Copyright © 2021 Constantin Bergemann</Copyright>
+    <Copyright>Copyright © 2022 Constantin Bergemann</Copyright>
     <PackageProjectUrl>https://github.com/cbergemann/VectorExpressionEngine</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/cbergemann/VectorExpressionEngine</RepositoryUrl>
@@ -12,7 +12,7 @@
     <PackageTags>array expressionengine matlab</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
