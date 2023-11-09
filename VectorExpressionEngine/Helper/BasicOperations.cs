@@ -134,6 +134,11 @@ namespace VectorExpressionEngine
                 return BinaryVectorAwareOperation<bool, bool, bool>((v1, v2) => v1 == v2, a, b);
             }
 
+            if ((a is string || a is string[]) && (b is string || b is string[]))
+            {
+                return BinaryVectorAwareOperation<string, string, bool>((v1, v2) => v1 == v2, a, b);
+            }
+            
             return BinaryVectorAwareOperation<double, double, bool>((v1, v2) => Math.Abs(v1 - v2) <= Tolerance, a, b);
         }
 
@@ -142,6 +147,11 @@ namespace VectorExpressionEngine
             if ((a is bool || a is bool[]) && (b is bool || b is bool[]))
             {
                 return BinaryVectorAwareOperation<bool, bool, bool>((v1, v2) => v1 != v2, a, b);
+            }
+
+            if ((a is string || a is string[]) && (b is string || b is string[]))
+            {
+                return BinaryVectorAwareOperation<string, string, bool>((v1, v2) => v1 != v2, a, b);
             }
 
             return BinaryVectorAwareOperation<double, double, bool>((v1, v2) => Math.Abs(v1 - v2) > Tolerance, a, b);
